@@ -82,7 +82,7 @@ function Counterfeit(props) {
 
 	let handleConnectWallet = async (e) => {
 		try {
-			await window.ethereum.sendAsync('eth_requestAccounts');
+			await window.ethereum.request({ method: 'eth_requestAccounts' });
 			setIsWalletConnected(true);
 		} catch (e) {
 			console.log("Error requesting accounts", e);
