@@ -102,8 +102,14 @@ function Counterfeit(props) {
 				"PaymentTransactionID": trxn.hash,
 				"DestinationAddress": trxn.from
 			});
+
+			alert("Success! You'll have a newly minted NFT shortly");
+			setCounterfeitContractAddr("");
+			setCounterfeitTokenId("");
+			setOrder(null);
 		} catch (e) {
 			console.log("Error finishing transaction", e);
+			alert("Uhhh, something went wrong... contact me about getting this worked out.")
 		}
 	};
 
@@ -157,6 +163,7 @@ function Counterfeit(props) {
 				</div>
 				: null
 			}
+
 		</div>
 	);
 }
