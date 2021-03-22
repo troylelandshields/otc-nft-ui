@@ -9,7 +9,7 @@ function Home(props) {
 	return (
 		<Row>
 			<Col className="col-md-4">
-            	Step 1: Find an NFT you love.
+            	Step 1: <a href="https://testnets.opensea.io/assets">Find an NFT</a> you love or want to sell.
 			</Col>
 			<Col className="col-md-4">
             	Step 2: Put the URL into the Counterfeit page.
