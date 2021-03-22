@@ -70,6 +70,7 @@ function Counterfeit(props) {
 
 		} catch (e) {
 			console.log("Error occurred when attempting to go to checkout.", e);
+			alert("It looks like that NFT isn't yet supported by OTC; we're working on it, but in the meantime try another one.")
 		}
 	};
 
