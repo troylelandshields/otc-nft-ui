@@ -8,7 +8,7 @@ function NavBar() {
         <div>
             <Row>
                 <Col>
-                    Over the Counter: NFTs for the Masses { config.env ? `(${config.env})` : null}
+                    <h1>Over the Counter: NFTs for the Masses</h1> { config.env ? `(${config.env})` : null}
                 </Col>
             </Row>  
             <Navbar sticky="top">
