@@ -1,5 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
+import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
 import config from '../../services/config.js';
 // import Web3 from 'web3';
@@ -94,7 +95,7 @@ function Counterfeit(props) {
 		try {
 			let signer = provider.getSigner();
 			const trxn = await signer.sendTransaction({
-				to: config.paymentProcessorAddr,
+				to: order.OTCMarketContractAddr,
 				value: ethers.BigNumber.from(order.TotalPriceInWei+"")
 			});
 
@@ -145,6 +146,17 @@ function Counterfeit(props) {
 			{ order ?
 				<div>
 					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
+					<Row>
+						<Col className="col-md-6">
+							<h3>
+								Contract Details
+							</h3>
+							<NFTMeta meta={order.NFTMeta}></NFTMeta>
+						</Col>
+					</Row>
+
+
+					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
 					<Form>
 						<Form.Group controlId="totalPrice">
 							<Form.Label>Total Price</Form.Label>
@@ -161,6 +173,7 @@ function Counterfeit(props) {
 						</Button>
 						</Form.Group>
 					</Form>
+
 				</div>
 				: null
 			}
