@@ -175,7 +175,7 @@ function Counterfeit(props) {
 					</Form.Group> 
 
 					<Row>
-						<Col className="col-md-4">
+						<Col className="col-md-4 col-12">
 							<Form.Group controlId="includeRugPull">
 								<Form.Check disabled={isCheckingOut} checked={includeRugPull} onChange={(e) => setIncludeRugPull(e.target.checked)} type="checkbox" label="Include Rug Pull" />
 								<Form.Text className="text-muted">
@@ -184,12 +184,12 @@ function Counterfeit(props) {
 							</Form.Group>
 						</Col>
 						{ includeRugPull ? <>
-								<Col className="col-md-4">
+								<Col className="col-md-4 col-12">
 									<Form.Group controlId="rugPullTime">
 										<Form.Control disabled={isCheckingOut} value={rugPullDate} onChange={(e) => setRugPullDate(e.target.value)} type="date" />
 									</Form.Group>
 								</Col>
-								<Col className="col-md-4">
+								<Col className="col-md-4 col-12">
 									<Form.Group controlId="rugPullTime">
 										<Form.Control disabled={isCheckingOut} value={rugPullTime} onChange={(e) => setRugPullTime(e.target.value)} type="time" />
 									</Form.Group>

@@ -89,7 +89,7 @@ function NFTMeta(props) {
 
                             let disabled = !props.editable || val.origin === "otc" || !!val.max_value;
 
-                            return <Col key={idx} className="col-md-4">
+                            return <Col key={idx} className="col-4">
                                 {
                                     <Form.Group controlId={"nftmeta"+idx}>
                                         <Form.Label>{`${val.trait_type}`}</Form.Label> {!disabled ? <Trash onClick={()=> remove(idx)}></Trash> : null}
