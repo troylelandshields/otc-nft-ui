@@ -16,6 +16,7 @@ function NavBar() {
                     <Nav.Link as={Link} eventKey="home" to={`/`}>Home</Nav.Link> 
                     <Nav.Link as={Link} eventKey="counterfeit" to={`/counterfeit`}>Counterfeit</Nav.Link> 
                     <Nav.Link as={Link} eventKey="custom" to={`/custom`}>Custom NFT</Nav.Link> 
+                    <Nav.Link as={Link} eventKey="own" to={`/own`}>Own this Market</Nav.Link> 
                 </Nav>
             </Navbar>
         </div>
