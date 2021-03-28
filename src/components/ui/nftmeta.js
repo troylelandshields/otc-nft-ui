@@ -67,7 +67,7 @@ function NFTMeta(props) {
                 </Row>
                 <h4>Attributes</h4>
                 <Row>
-                    <FieldArray name="attributes">
+                    { !!values.attributes && <FieldArray name="attributes">
                     {({ insert, remove, push }) => (
                         values.attributes.map((val, idx) => { 
                             val.formattedVal = val.value;
@@ -92,7 +92,7 @@ function NFTMeta(props) {
                             return <Col key={idx} className="col-4">
                                 {
                                     <Form.Group controlId={"nftmeta"+idx}>
-                                        <Form.Label>{`${val.trait_type}`}</Form.Label> {!disabled ? <Trash onClick={()=> remove(idx)}></Trash> : null}
+                                        { !!val.trait_type && <Form.Label>{`${val.trait_type}`}</Form.Label> } {!disabled ? <Trash onClick={()=> remove(idx)}></Trash> : null}
                                         <Form.Control onChange={handleChange} name={`attributes.${idx}.value`} disabled={disabled} type={val.inputType} value={val.formattedVal} />
                                         {val.display_type ? <Form.Text className="text-muted">
                                             {val.display_type}
@@ -102,7 +102,7 @@ function NFTMeta(props) {
                             </Col>
                         })
                     )}
-                    </FieldArray>
+                    </FieldArray> }
                 </Row>
                 <Row>
                     <Col className="col-md-12">

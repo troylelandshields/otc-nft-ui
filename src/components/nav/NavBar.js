@@ -15,6 +15,7 @@ function NavBar() {
                 <Nav defaultActiveKey="home">
                     <Nav.Link as={Link} eventKey="home" to={`/`}>Home</Nav.Link> 
                     <Nav.Link as={Link} eventKey="counterfeit" to={`/counterfeit`}>Counterfeit</Nav.Link> 
+                    <Nav.Link as={Link} eventKey="custom" to={`/custom`}>Custom NFT</Nav.Link> 
                 </Nav>
             </Navbar>
         </div>

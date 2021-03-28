@@ -21,30 +21,34 @@ import { InfoCircleFill } from 'react-bootstrap-icons';
 // 	return false;
 // }
 
-function Counterfeit(props) {
+function Custom(props) {
 	// https://testnets.opensea.io/assets/0x99bae45fb8abab73d8969fad837f5287ec294eea/1
 
-	let [ counterfeitContractAddr, setCounterfeitContractAddr ] = useState("");
-	let [ counterfeitTokenId, setCounterfeitTokenId ] = useState("");
-	let [ includeRugPull, setIncludeRugPull ] = useState(false);
-	let [ rugPullDate, setRugPullDate ] = useState(moment().add(1, "month").format("YYYY-MM-DD"));
-	let [ rugPullTime, setRugPullTime ] = useState("12:00");
+	let zeroNFTMeta = () => ({
+		image: "",
+		external_url:"",
+		youtube_url:"",
+		animation_url:"",
+		name: "",
+		description: "",
+		attributes:[]
+	});
+
+	let [ nftMeta, setNFTMeta ] = useState(zeroNFTMeta());
 	let [ checkoutReady, setIsCheckoutReady ] = useState(false);
 	let [ isCheckingOut, setIsCheckingOut ] = useState(false);
 	let [ walletConnected, setIsWalletConnected ] = useState(false);
 	let [ order, setOrder ] = useState(null);
 	let [ provider, setProvider ] = useState(null);
-	let [ rugPullMeta, setRugPullMeta ] = useState(null);
 
 
 	useEffect(() => {
-		let hasTokenDetails = !!counterfeitContractAddr && !!counterfeitTokenId;
-		if (includeRugPull) {
-			setIsCheckoutReady(hasTokenDetails && !!rugPullDate && !!rugPullTime);
-			return;
+		if (nftMeta.name) {
+			setIsCheckoutReady(true);
+            return;
 		}
-		setIsCheckoutReady(hasTokenDetails);
-	}, [counterfeitContractAddr, counterfeitTokenId, includeRugPull, rugPullDate, rugPullTime]);
+		setIsCheckoutReady(false);
+	}, [nftMeta]);
 
 	useEffect(() => {
 		setIsCheckingOut(!!order);
@@ -66,41 +70,21 @@ function Counterfeit(props) {
 		f();
 	}, [provider]);
 
-	let parseAndSetCounterfeitAddr = (val) => {
-		let parts = val.split("assets");
-		if (!parts || parts.length !== 2) {
-			setCounterfeitContractAddr(val);
-			return
-		}
-		
-		let details = parts[1].split("/");
-		if (!details || details.length !== 3) {
-			setCounterfeitContractAddr(val);
-			return
-		}
-
-		setCounterfeitContractAddr(details[1]);
-		setCounterfeitTokenId(details[2]);
-	}
-
-	let previewCounterfeit = async (e) => {
+	let previewCustom = async (e) => {
 		e.preventDefault();
-		console.log(counterfeitTokenId, counterfeitContractAddr);
+		console.log(nftMeta);
 
 		try {
-			let rugPullDateTime;
-			if (includeRugPull) {
-				rugPullDateTime = moment(rugPullDate + " " + rugPullTime).format();
-			}
-
 			let resp = await axios.post(`${config.apiHost}/api/v1/preview`, {
-				"Type": "contract",
-				"ContractAddr": counterfeitContractAddr,
-				"CounterfeitTokenID": counterfeitTokenId,
-				"RugPullTime": rugPullDateTime,
+				"Type": "custom",
+                "NFTMeta": nftMeta,
 			});
 
 			let o = resp.data;
+
+			if (o.NFTMeta) {
+				setNFTMeta(o.NFTMeta);
+			}
 
 			const etherValue = ethers.utils.formatEther(o.TotalPriceInWei+"");
 			console.log(etherValue);
@@ -119,11 +103,7 @@ function Counterfeit(props) {
 
 	let handleClear = (e) => {
 		e.preventDefault();
-		setCounterfeitContractAddr("");
-		setCounterfeitTokenId("");
-		setIncludeRugPull(false);
 		setOrder(null);
-		setRugPullMeta(null);
 	};
 
 	let handleConnectWallet = async (e) => {
@@ -147,14 +127,11 @@ function Counterfeit(props) {
 				"OrderID": order.OrderID,
 				"PaymentTransactionID": trxn.hash,
 				"DestinationAddress": trxn.from,
-				"NFTMeta": rugPullMeta
+				"NFTMeta": nftMeta
 			});
 
 			alert("Success! You'll have a newly minted NFT shortly");
-			setCounterfeitContractAddr("");
-			setCounterfeitTokenId("");
-			setIncludeRugPull(false);
-			setRugPullMeta(null);
+			setNFTMeta(zeroNFTMeta());
 			setOrder(null);
 		} catch (e) {
 			console.log("Error finishing transaction", e);
@@ -165,78 +142,21 @@ function Counterfeit(props) {
 	return (
 		<div>
 			<Form>
-				<Form.Group controlId="counterfeitContractAddr">
-					<Form.Label>Contract Address</Form.Label>
-					<Form.Control disabled={isCheckingOut} value={counterfeitContractAddr} onChange={(e) => parseAndSetCounterfeitAddr(e.target.value)} type="text" placeholder="Paste a link from OpenSea or any ERC721 contract's ethereum address" />
-					<Form.Text className="text-muted">
-						If this is wrong I don't want to be right.
-					</Form.Text>
-				</Form.Group>
-
-				{ counterfeitContractAddr ? <>
-					<Form.Group controlId="counterfeitTokenId">
-						<Form.Label>Token ID</Form.Label>
-						<Form.Control disabled={isCheckingOut} value={counterfeitTokenId} onChange={(e) => setCounterfeitTokenId(e.target.value)} type="text" placeholder="Input the Token ID you want" />
-					</Form.Group> 
-
-					<Row>
-						<Col className="col-md-4 col-12">
-							<Form.Group controlId="includeRugPull">
-								<Form.Check disabled={isCheckingOut} checked={includeRugPull} onChange={(e) => setIncludeRugPull(e.target.checked)} type="checkbox" label="Include Rug Pull" />
-								<Form.Text className="text-muted">
-									A rugpull will change the metadata of the contract on a certain date; let's you do some pretty classic pranks on your friends. Be aware that this is associated with an increased cost.
-								</Form.Text>
-							</Form.Group>
-						</Col>
-						{ includeRugPull ? <>
-								<Col className="col-md-4 col-12">
-									<Form.Group controlId="rugPullTime">
-										<Form.Control disabled={isCheckingOut} value={rugPullDate} onChange={(e) => setRugPullDate(e.target.value)} type="date" />
-									</Form.Group>
-								</Col>
-								<Col className="col-md-4 col-12">
-									<Form.Group controlId="rugPullTime">
-										<Form.Control disabled={isCheckingOut} value={rugPullTime} onChange={(e) => setRugPullTime(e.target.value)} type="time" />
-									</Form.Group>
-								</Col>
-							</>
-						: null }
-					</Row>
-					</>
-					: null
-				}
-
+                { !order ? <NFTMeta meta={nftMeta} editable={!isCheckingOut} changes={(v) => setNFTMeta(v)}></NFTMeta> : <NFTMeta meta={order.NFTMeta} editable={false} changes={(v) => setNFTMeta(v)}></NFTMeta> }
 				{
 					!isCheckingOut ? 
-					<Button variant="primary" onClick={previewCounterfeit} disabled={!checkoutReady}>
+					<Button variant="primary" onClick={previewCustom} disabled={!checkoutReady}>
 						Go to Checkout
 					</Button>
 					: 				
 					<Button variant="default" onClick={handleClear}>
-						Clear
+						Edit
 					</Button>
 				}
 			</Form>
 
 			{ order ?
 				<div>
-					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
-					<Row>
-						<Col className="col-md-6">
-							<h3>
-								Contract Details
-							</h3>
-							<NFTMeta meta={order.NFTMeta}></NFTMeta>
-						</Col>
-						{ includeRugPull ? <Col className="col-md-6">
-							<h3>
-								Rug Pull Details
-							</h3>
-							<NFTMeta meta={order.NFTMeta} editable={true} changes={(v) => setRugPullMeta(v)}></NFTMeta>
-						</Col> : null }
-					</Row>
-
-
 					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
 					<Row>
 						<Col className="col-md-6 col-12">
@@ -277,7 +197,7 @@ function Counterfeit(props) {
 }
 
 
-export default Counterfeit;
+export default Custom;
 
 
 // {
