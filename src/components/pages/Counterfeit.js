@@ -1,4 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
+import ReactTooltip from 'react-tooltip';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
@@ -6,6 +7,7 @@ import config from '../../services/config.js';
 // import Web3 from 'web3';
 import { ethers } from "ethers";
 import moment from 'moment';
+import { InfoCircleFill } from 'react-bootstrap-icons';
 
 // const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 // web3.eth.getAccounts().then(console.log);
@@ -103,6 +105,8 @@ function Counterfeit(props) {
 			console.log(etherValue);
 
 			o.etherValue = etherValue;
+
+			o.usdValue = o.PriceDetails.PriceUSCents / 100;
 
 			setOrder(o);
 
@@ -233,22 +237,36 @@ function Counterfeit(props) {
 
 
 					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
-					<Form>
-						<Form.Group controlId="totalPrice">
-							<Form.Label>Total Price</Form.Label>
-							<Form.Control disabled type="text" value={order.etherValue + " ETH"} />
-						</Form.Group>
-						<Form.Group controlId="connectWallet">
-						<Button disabled={walletConnected} variant="primary" onClick={handleConnectWallet}>
-							1. Connect Wallet
-						</Button>
-						</Form.Group>
-						<Form.Group>
-						<Button disabled={!walletConnected} variant="primary" onClick={handleCheckout}>
-							2. Finish Transaction to Mint NFT
-						</Button>
-						</Form.Group>
-					</Form>
+					<Row>
+						<Col className="col-md-6 col-12">
+							<Form>
+								<Form.Group controlId="totalPrice">
+									<ReactTooltip
+										offset="right"
+										multiline={true}>
+											{order.PriceDetails.LineItems.map((li, idx) => {
+												return <div key={idx}>{li}</div>
+											})}
+									</ReactTooltip>
+										<Form.Label><h5>Total Price</h5></Form.Label><InfoCircleFill data-tip="price-details" style={{marginLeft:"10px"}}></InfoCircleFill>
+										<Form.Control readOnly={true} type="text" value={`${order.etherValue} ETH - ($${order.usdValue} + gas)`} />
+								</Form.Group>
+								<Form.Group controlId="connectWallet">
+								<Button disabled={walletConnected} variant="primary" onClick={handleConnectWallet}>
+									1. Connect Wallet
+								</Button>
+								<Form.Text className="text-muted">
+									By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract. This NFT does not pretend to be the original and service of contract metadata could potentially be hindered by the other party. You are also acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
+								</Form.Text>
+								</Form.Group>
+								<Form.Group>
+								<Button disabled={!walletConnected} variant="primary" onClick={handleCheckout}>
+									2. Finish Transaction to Mint NFT
+								</Button>
+								</Form.Group>
+							</Form>
+						</Col>
+					</Row>
 
 				</div>
 				: null
