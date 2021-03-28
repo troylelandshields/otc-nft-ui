@@ -5,6 +5,7 @@ import axios from 'axios';
 import config from '../../services/config.js';
 // import Web3 from 'web3';
 import { ethers } from "ethers";
+import moment from 'moment';
 
 // const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 // web3.eth.getAccounts().then(console.log);
@@ -23,11 +24,24 @@ function Counterfeit(props) {
 
 	let [ counterfeitContractAddr, setCounterfeitContractAddr ] = useState("");
 	let [ counterfeitTokenId, setCounterfeitTokenId ] = useState("");
+	let [ includeRugPull, setIncludeRugPull ] = useState(false);
+	let [ rugPullDate, setRugPullDate ] = useState(moment().add(1, "month").format("YYYY-MM-DD"));
+	let [ rugPullTime, setRugPullTime ] = useState("12:00");
+	let [ checkoutReady, setIsCheckoutReady ] = useState(false);
 	let [ isCheckingOut, setIsCheckingOut ] = useState(false);
 	let [ walletConnected, setIsWalletConnected ] = useState(false);
 	let [ order, setOrder ] = useState(null);
 	let [ provider, setProvider ] = useState(null);
+	let [ rugPullMeta, setRugPullMeta ] = useState(null);
 
+
+	useEffect(() => {
+		let hasTokenDetails = !!counterfeitContractAddr && !!counterfeitTokenId;
+		if (includeRugPull) {
+			setIsCheckoutReady(hasTokenDetails && !!rugPullDate && !!rugPullTime);
+		}
+		setIsCheckoutReady(hasTokenDetails);
+	}, [counterfeitContractAddr, counterfeitTokenId, includeRugPull, rugPullDate, rugPullTime]);
 
 	useEffect(() => {
 		setIsCheckingOut(!!order);
@@ -49,20 +63,43 @@ function Counterfeit(props) {
 		f();
 	}, [provider]);
 
+	let parseAndSetCounterfeitAddr = (val) => {
+		let parts = val.split("assets");
+		if (!parts || parts.length !== 2) {
+			setCounterfeitContractAddr(val);
+			return
+		}
+		
+		let details = parts[1].split("/");
+		if (!details || details.length !== 3) {
+			setCounterfeitContractAddr(val);
+			return
+		}
+
+		setCounterfeitContractAddr(details[1]);
+		setCounterfeitTokenId(details[2]);
+	}
+
 	let previewCounterfeit = async (e) => {
 		e.preventDefault();
 		console.log(counterfeitTokenId, counterfeitContractAddr);
 
 		try {
+			let rugPullDateTime;
+			if (includeRugPull) {
+				rugPullDateTime = moment(rugPullDate + " " + rugPullTime).format();
+			}
+
 			let resp = await axios.post(`${config.apiHost}/api/v1/preview`, {
 				"Type": "contract",
 				"ContractAddr": counterfeitContractAddr,
-				"CounterfeitTokenID": counterfeitTokenId
+				"CounterfeitTokenID": counterfeitTokenId,
+				"RugPullTime": rugPullDateTime,
 			});
 
 			let o = resp.data;
 
-			const etherValue =ethers.utils.formatEther(o.TotalPriceInWei+"");
+			const etherValue = ethers.utils.formatEther(o.TotalPriceInWei+"");
 			console.log(etherValue);
 
 			o.etherValue = etherValue;
@@ -78,8 +115,10 @@ function Counterfeit(props) {
 	let handleClear = (e) => {
 		e.preventDefault();
 		setCounterfeitContractAddr("");
-		setCounterfeitTokenId("")
+		setCounterfeitTokenId("");
+		setIncludeRugPull(false);
 		setOrder(null);
+		setRugPullMeta(null);
 	};
 
 	let handleConnectWallet = async (e) => {
@@ -102,12 +141,15 @@ function Counterfeit(props) {
 			await axios.post(`${config.apiHost}/api/v1/mint/${order.OrderID}`, {
 				"OrderID": order.OrderID,
 				"PaymentTransactionID": trxn.hash,
-				"DestinationAddress": trxn.from
+				"DestinationAddress": trxn.from,
+				"NFTMeta": rugPullMeta
 			});
 
 			alert("Success! You'll have a newly minted NFT shortly");
 			setCounterfeitContractAddr("");
 			setCounterfeitTokenId("");
+			setIncludeRugPull(false);
+			setRugPullMeta(null);
 			setOrder(null);
 		} catch (e) {
 			console.log("Error finishing transaction", e);
@@ -120,20 +162,48 @@ function Counterfeit(props) {
 			<Form>
 				<Form.Group controlId="counterfeitContractAddr">
 					<Form.Label>Contract Address</Form.Label>
-					<Form.Control disabled={isCheckingOut} value={counterfeitContractAddr} onChange={(e) => setCounterfeitContractAddr(e.target.value)} type="text" placeholder="Copy an ERC721 contract's ethereum address" />
+					<Form.Control disabled={isCheckingOut} value={counterfeitContractAddr} onChange={(e) => parseAndSetCounterfeitAddr(e.target.value)} type="text" placeholder="Paste a link from OpenSea or any ERC721 contract's ethereum address" />
 					<Form.Text className="text-muted">
 						If this is wrong I don't want to be right.
 					</Form.Text>
 				</Form.Group>
 
-				<Form.Group controlId="counterfeitTokenId">
-					<Form.Label>Token ID</Form.Label>
-					<Form.Control disabled={isCheckingOut} value={counterfeitTokenId} onChange={(e) => setCounterfeitTokenId(e.target.value)} type="text" placeholder="Input the Token ID you want" />
-				</Form.Group>
+				{ counterfeitContractAddr ? <>
+					<Form.Group controlId="counterfeitTokenId">
+						<Form.Label>Token ID</Form.Label>
+						<Form.Control disabled={isCheckingOut} value={counterfeitTokenId} onChange={(e) => setCounterfeitTokenId(e.target.value)} type="text" placeholder="Input the Token ID you want" />
+					</Form.Group> 
+
+					<Row>
+						<Col className="col-md-4">
+							<Form.Group controlId="includeRugPull">
+								<Form.Check disabled={isCheckingOut} checked={includeRugPull} onChange={(e) => setIncludeRugPull(e.target.checked)} type="checkbox" label="Include Rug Pull" />
+								<Form.Text className="text-muted">
+									A rugpull will change the metadata of the contract on a certain date; let's you do some pretty classic pranks on your friends. Be aware that this is associated with an increased cost.
+								</Form.Text>
+							</Form.Group>
+						</Col>
+						{ includeRugPull ? <>
+								<Col className="col-md-4">
+									<Form.Group controlId="rugPullTime">
+										<Form.Control disabled={isCheckingOut} value={rugPullDate} onChange={(e) => setRugPullDate(e.target.value)} type="date" />
+									</Form.Group>
+								</Col>
+								<Col className="col-md-4">
+									<Form.Group controlId="rugPullTime">
+										<Form.Control disabled={isCheckingOut} value={rugPullTime} onChange={(e) => setRugPullTime(e.target.value)} type="time" />
+									</Form.Group>
+								</Col>
+							</>
+						: null }
+					</Row>
+					</>
+					: null
+				}
 
 				{
 					!isCheckingOut ? 
-					<Button variant="primary" onClick={previewCounterfeit}>
+					<Button variant="primary" onClick={previewCounterfeit} disabled={!checkoutReady}>
 						Go to Checkout
 					</Button>
 					: 				
@@ -153,6 +223,12 @@ function Counterfeit(props) {
 							</h3>
 							<NFTMeta meta={order.NFTMeta}></NFTMeta>
 						</Col>
+						{ includeRugPull ? <Col className="col-md-6">
+							<h3>
+								Rug Pull Details
+							</h3>
+							<NFTMeta meta={order.NFTMeta} editable={true} changes={(v) => setRugPullMeta(v)}></NFTMeta>
+						</Col> : null }
 					</Row>
 
 
