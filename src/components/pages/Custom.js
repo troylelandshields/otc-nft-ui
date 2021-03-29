@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Spinner } from 'react-bootstrap';
 import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
 import config from '../../services/config.js';
@@ -40,6 +40,8 @@ function Custom(props) {
 	let [ walletConnected, setIsWalletConnected ] = useState(false);
 	let [ order, setOrder ] = useState(null);
 	let [ provider, setProvider ] = useState(null);
+	let [ loadingPreview, setLoadingPreview ] = useState(false);
+	let [ loadingCheckout, setLoadingCheckout ] = useState(false);
 
 
 	useEffect(() => {
@@ -71,6 +73,7 @@ function Custom(props) {
 	}, [provider]);
 
 	let previewCustom = async (e) => {
+		setLoadingPreview(true);
 		e.preventDefault();
 		console.log(nftMeta);
 
@@ -99,6 +102,7 @@ function Custom(props) {
 			console.log("Error occurred when attempting to go to checkout.", e);
 			alert("It looks like that NFT isn't yet supported by OTC; we're working on it, but in the meantime try another one.")
 		}
+		setLoadingPreview(false);
 	};
 
 	let handleClear = (e) => {
@@ -116,6 +120,7 @@ function Custom(props) {
 	};
 
 	let handleCheckout = async (e) => {
+		setLoadingCheckout(true);
 		try {
 			let signer = provider.getSigner();
 			const trxn = await signer.sendTransaction({
@@ -137,6 +142,7 @@ function Custom(props) {
 			console.log("Error finishing transaction", e);
 			alert("Uhhh, something went wrong... contact me about getting this worked out.")
 		}
+		setLoadingCheckout(false);
 	};
 
 	return (
@@ -185,8 +191,14 @@ function Custom(props) {
 						{ !order ? <NFTMeta meta={nftMeta} editable={!isCheckingOut} changes={(v) => setNFTMeta(v)}></NFTMeta> : <NFTMeta meta={order.NFTMeta} editable={false} changes={(v) => setNFTMeta(v)}></NFTMeta> }
 						{
 							!isCheckingOut ? 
-							<Button variant="primary" onClick={previewCustom} disabled={!checkoutReady}>
-								Go to Checkout
+							<Button variant="primary" onClick={previewCustom} disabled={!checkoutReady || loadingPreview}>
+								{ loadingPreview ? <Spinner
+									as="span"
+									animation="grow"
+									size="sm"
+									role="status"
+									aria-hidden="true"
+								/> : "Preview" }
 							</Button>
 							: 				
 							<Button variant="default" onClick={handleClear}>
@@ -220,8 +232,14 @@ function Custom(props) {
 										</Form.Text>
 										</Form.Group>
 										<Form.Group>
-										<Button disabled={!walletConnected} variant="primary" onClick={handleCheckout}>
-											2. Finish Transaction to Mint NFT
+										<Button disabled={!walletConnected || loadingCheckout} variant="primary" onClick={handleCheckout}>
+											{ loadingCheckout ? <Spinner
+												as="span"
+												animation="grow"
+												size="sm"
+												role="status"
+												aria-hidden="true"
+											/> : "2. Finish Transaction to Mint NFT" }
 										</Button>
 										</Form.Group>
 									</Form>
