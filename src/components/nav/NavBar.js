@@ -54,8 +54,8 @@ function NavBar() {
                         <h5 style={{fontFamily: "'Raleway', sans-serif", bottom:"0px"}}>NFTs for the Masses</h5> 
                     </Col>
                     { currBasePrice && <Col md={{span:3, offset:1}}>
-                        <h5 style={{fontFamily: "'Raleway', sans-serif", bottom:"0px", opacity:"50%", fontSize:"12px"}}>NFT Base Price: ${currBasePrice} </h5> 
-                        <h5 style={{fontFamily: "'Raleway', sans-serif", bottom:"0px", opacity:"50%", fontSize:"12px"}}>Owner Balance: {currOwnerBal} Eth </h5> 
+                        <h5 style={{fontFamily: "'Raleway', sans-serif", bottom:"0px", opacity:"60%", fontSize:"14px"}}>NFT Base Price: ${currBasePrice} </h5> 
+                        <h5 style={{fontFamily: "'Raleway', sans-serif", bottom:"0px", opacity:"60%", fontSize:"14px"}}>Owner Balance: {currOwnerBal}&nbsp;Eth </h5> 
                     </Col> }
                 </Row>  
                 <Navbar sticky="top" expand="md" className="navbar-dark" style={{marginBotom:"15px"}}>

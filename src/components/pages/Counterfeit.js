@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Spinner } from 'react-bootstrap';
 import { useLocation, useHistory } from 'react-router-dom';
 import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
@@ -45,6 +45,8 @@ function Counterfeit(props) {
 	let [ provider, setProvider ] = useState(null);
 	let [ rugPullMeta, setRugPullMeta ] = useState(null);
 	let [ quickloadPreview, setQuickloadPreview ] = useState(contractParam && tokenParam);
+	let [ loadingPreview, setLoadingPreview ] = useState(false);
+	let [ loadingCheckout, setLoadingCheckout ] = useState(false);
 
 	useEffect(() => {
 		if (!checkoutReady) {
@@ -119,6 +121,7 @@ function Counterfeit(props) {
 
 	let previewCounterfeit = async (e) => {
 		!!e && e.preventDefault();
+		setLoadingPreview(true);
 		console.log(counterfeitTokenId, counterfeitContractAddr);
 
 		try {
@@ -149,6 +152,7 @@ function Counterfeit(props) {
 			console.log("Error occurred when attempting to go to checkout.", e);
 			alert("It looks like that NFT isn't yet supported by OTC; we're working on it, but in the meantime try another one.")
 		}
+		setLoadingPreview(false);
 	};
 
 	let handleClear = (e) => {
@@ -175,6 +179,7 @@ function Counterfeit(props) {
 	};
 
 	let handleCheckout = async (e) => {
+		setLoadingCheckout(true);
 		try {
 			let signer = provider.getSigner();
 			const trxn = await signer.sendTransaction({
@@ -199,6 +204,7 @@ function Counterfeit(props) {
 			console.log("Error finishing transaction", e);
 			alert("Uhhh, something went wrong... contact me about getting this worked out.")
 		}
+		setLoadingCheckout(false);
 	};
 
 	return (
@@ -285,8 +291,14 @@ function Counterfeit(props) {
 
 				{
 					!isCheckingOut ? 
-					<Button variant="primary" onClick={previewCounterfeit} disabled={!checkoutReady}>
-						Preview
+					<Button variant="primary" onClick={previewCounterfeit} disabled={!checkoutReady || loadingPreview}>
+						{ loadingPreview ? <Spinner
+							as="span"
+							animation="grow"
+							size="sm"
+							role="status"
+							aria-hidden="true"
+						/> : "Preview" }
 					</Button>
 					: 	
 					<>
@@ -344,8 +356,14 @@ function Counterfeit(props) {
 								</Form.Text>
 								</Form.Group>
 								<Form.Group>
-								<Button disabled={!walletConnected} variant="primary" onClick={handleCheckout}>
-									2. Finish Transaction to Mint NFT
+								<Button disabled={!walletConnected || loadingCheckout} variant="primary" onClick={handleCheckout}>
+									{ loadingCheckout ? <Spinner
+										as="span"
+										animation="grow"
+										size="sm"
+										role="status"
+										aria-hidden="true"
+									/> : "2. Finish Transaction to Mint NFT" }
 								</Button>
 								</Form.Group>
 							</Form>
