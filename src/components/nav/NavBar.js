@@ -58,15 +58,18 @@ function NavBar() {
                         <h5 style={{fontFamily: "'Raleway', sans-serif", bottom:"0px", opacity:"50%", fontSize:"12px"}}>Owner Balance: {currOwnerBal} Eth </h5> 
                     </Col> }
                 </Row>  
-                <Navbar sticky="top" className="navbar-dark" style={{marginBotom:"15px"}}>
-                    <Nav defaultActiveKey="home">
-                        <Nav.Link as={Link} eventKey="home" to={`/`}>Home</Nav.Link> 
-                        <Nav.Link as={Link} eventKey="counterfeit" to={`/counterfeit`}>Counterfeit</Nav.Link> 
-                        <Nav.Link as={Link} eventKey="custom" to={`/custom`}>NFT the Web</Nav.Link> 
-                        <Nav.Link as={Link} eventKey="own" to={`/own`}>Own this Market</Nav.Link> 
-                        <Nav.Link as={Link} eventKey="faq" to={`/faq`}>FAQs</Nav.Link> 
-                        <Nav.Link  href={contractURL} target="_blank" rel="noreferrer">Smart Contract</Nav.Link>
-                    </Nav>
+                <Navbar sticky="top" expand="md" className="navbar-dark" style={{marginBotom:"15px"}}>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" className="float-right" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav defaultActiveKey="home">
+                            <Nav.Link as={Link} eventKey="home" to={`/`}>Home</Nav.Link> 
+                            <Nav.Link as={Link} eventKey="counterfeit" to={`/counterfeit`}>Counterfeit</Nav.Link> 
+                            <Nav.Link as={Link} eventKey="custom" to={`/custom`}>NFT the Web</Nav.Link> 
+                            <Nav.Link as={Link} eventKey="own" to={`/own`}>Own this Market</Nav.Link> 
+                            <Nav.Link as={Link} eventKey="faq" to={`/faq`}>FAQs</Nav.Link> 
+                            <Nav.Link  href={contractURL} target="_blank" rel="noreferrer">Smart Contract</Nav.Link>
+                        </Nav>
+                    </Navbar.Collapse>
                 </Navbar>
             </Container>
         </div>

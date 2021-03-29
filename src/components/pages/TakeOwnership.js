@@ -123,7 +123,7 @@ function TakeOwnership(props) {
                         <Card.Body>
                             <Card.Title>Step 2</Card.Title>
                             <Card.Text>
-								Click the take ownership button below. <span style={{opacity:"50%"}}>(The current profits held by the contract will be released to the current owner).</span>
+								Click the take ownership button below. <span style={{opacity:"50%"}}>(The profits held by the contract will be released to the current owner).</span>
                             </Card.Text>
                         </Card.Body>
 					</Card>
