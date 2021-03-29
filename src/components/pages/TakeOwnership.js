@@ -108,8 +108,8 @@ function TakeOwnership(props) {
             <hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px"}} />
 
 			<Row>
-				<Col className="col-md-4">
-					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+				<Col className="col-md-4 col-12" style={{marginTop:"15px"}}>
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"15px"}}>
                         <Card.Body>
                             <Card.Title>Step 1</Card.Title>
                             <Card.Text>
@@ -118,8 +118,8 @@ function TakeOwnership(props) {
                         </Card.Body>
 					</Card>
 				</Col>
-				<Col className="col-md-4">
-					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+				<Col className="col-md-4 col-12" style={{marginTop:"15px"}}>
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"15px"}}>
                         <Card.Body>
                             <Card.Title>Step 2</Card.Title>
                             <Card.Text>
@@ -128,8 +128,8 @@ function TakeOwnership(props) {
                         </Card.Body>
 					</Card>
 				</Col>
-				<Col className="col-md-4">
-					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+				<Col className="col-md-4 col-12" style={{marginTop:"15px"}}>
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"15px"}}>
                         <Card.Body>
                             <Card.Title>Step 3</Card.Title>
                             <Card.Text>
