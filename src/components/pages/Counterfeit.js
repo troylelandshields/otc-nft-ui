@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
 import config from '../../services/config.js';
@@ -164,17 +164,43 @@ function Counterfeit(props) {
 
 	return (
 		<div>
+			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px", marginTop:"0px"}} />
+                <h1 class="display-5">Counterfeit</h1> <h6 style={{opacity:"50%"}}>This is a pun</h6>
+            <hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px"}} />
 			<Row>
 				<Col className="col-md-4">
-					Step 1: <a href="https://testnets.opensea.io/assets" target="_blank" rel="noreferrer">Find an NFT</a> you love or want to sell.
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+                        <Card.Body>
+                            <Card.Title>Step 1</Card.Title>
+                            <Card.Text>
+							<a href="https://testnets.opensea.io/assets" target="_blank" rel="noreferrer">Find an NFT</a> you love or want to sell.
+                            </Card.Text>
+                        </Card.Body>
+					</Card>
 				</Col>
 				<Col className="col-md-4">
-					Step 2: Put the URL into the Counterfeit page.
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+                        <Card.Body>
+                            <Card.Title>Step 2</Card.Title>
+                            <Card.Text>
+								Paste the URL or contract address into the text box below.
+                            </Card.Text>
+                        </Card.Body>
+					</Card>
 				</Col>
 				<Col className="col-md-4">
-					Step 3: Profit.
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+                        <Card.Body>
+                            <Card.Title>Step 3</Card.Title>
+                            <Card.Text>
+								Profit.
+                            </Card.Text>
+                        </Card.Body>
+					</Card>
 				</Col>
 			</Row>  
+
+			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px", marginTop:"45px"}}/>
 
 			<Form>
 				<Form.Group controlId="counterfeitContractAddr">
@@ -221,7 +247,7 @@ function Counterfeit(props) {
 				{
 					!isCheckingOut ? 
 					<Button variant="primary" onClick={previewCounterfeit} disabled={!checkoutReady}>
-						Go to Checkout
+						Preview
 					</Button>
 					: 				
 					<Button variant="default" onClick={handleClear}>
@@ -229,6 +255,8 @@ function Counterfeit(props) {
 					</Button>
 				}
 			</Form>
+
+			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px"}} />
 
 			{ order ?
 				<div>
@@ -268,7 +296,7 @@ function Counterfeit(props) {
 									1. Connect Wallet
 								</Button>
 								<Form.Text className="text-muted">
-									By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract. This NFT does not pretend to be the original and service of contract metadata could potentially be hindered by the other party. You are also acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
+									By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract. This NFT does not pretend to be the original and service of contract metadata could potentially be hindered by the other party. You are also acknowledging that this platform is someone's interactive art side-project, and therefore support for any technical issues is likely to be slow but earnest.
 								</Form.Text>
 								</Form.Group>
 								<Form.Group>

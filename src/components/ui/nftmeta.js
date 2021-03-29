@@ -26,14 +26,18 @@ function NFTMeta(props) {
     let displayElement = (handleChange, animationURL, imageURL) => {
         if (animationURL) {
             if (isModel(animationURL)) {
-                return <model-viewer max-width="250px" auto-rotate="true" autoplay="true" camera-controls="true" src={animationURL} ar-status="not-presenting"></model-viewer>
+                return <model-viewer style={{maxWidth:"100%"}} height="250px" auto-rotate="true" autoplay="true" camera-controls="true" src={animationURL} ar-status="not-presenting"></model-viewer>
             } 
             if (isVideo(animationURL)) {
-                return <video height="200px" max-width="250px" muted={true} autoPlay={true} controlsList="nodownload" loop={true} preload="auto" src={animationURL}></video>
+                return <video style={{maxWidth:"100%"}} height="250px" muted={true} autoPlay={true} controlsList="nodownload" loop={true} preload="auto" src={animationURL}></video>
             } 
         }
 
-        return <img height="200px" max-width="250px" src={imageURL} alt="Error loading contract pic"></img>
+        if (!imageURL) {
+            return <img style={{maxWidth:"100%", opacity:"70%"}} height="250px" src="https://picsum.photos/400/300" alt="Error loading contract pic"></img>
+        }
+
+        return <img style={{maxWidth:"100%"}} height="250px" src={imageURL} alt="Error loading contract pic"></img>
     };
 
 	return (
@@ -52,7 +56,9 @@ function NFTMeta(props) {
              {props.changes && props.changes(values)}
                 <Row>
                     <Col className="col-md-6">
-                        {displayElement(handleChange, values.animation_url, values.image)}
+                        <div style={{maxWidth:"100%"}}>
+                            {displayElement(handleChange, values.animation_url, values.image)}
+                        </div>
                     </Col>
                     <Col className="col-md-6">
                         <Form.Group controlId={"nftmeta-name"+values.NFTID}>
@@ -65,6 +71,7 @@ function NFTMeta(props) {
                         </Form.Group>
                     </Col>
                 </Row>
+                <hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px"}} />
                 <h4>Attributes</h4>
                 <Row>
                     { !!values.attributes && <FieldArray name="attributes">
@@ -92,7 +99,7 @@ function NFTMeta(props) {
                             return <Col key={idx} className="col-4">
                                 {
                                     <Form.Group controlId={"nftmeta"+idx}>
-                                        { !!val.trait_type && <Form.Label>{`${val.trait_type}`}</Form.Label> } {!disabled ? <Trash onClick={()=> remove(idx)}></Trash> : null}
+                                        { !!val.trait_type ? <Form.Label>{`${val.trait_type}`}</Form.Label> : <Form.Label style={{opacity:"20%"}}>No trait type</Form.Label> } {!disabled ? <Trash onClick={()=> remove(idx)}></Trash> : null}
                                         <Form.Control onChange={handleChange} name={`attributes.${idx}.value`} disabled={disabled} type={val.inputType} value={val.formattedVal} />
                                         {val.display_type ? <Form.Text className="text-muted">
                                             {val.display_type}
@@ -108,23 +115,24 @@ function NFTMeta(props) {
                     <Col className="col-md-12">
                         <Form.Group controlId={"nftmeta-img-url"+values.NFTID}>
                             <Form.Label>Image URL</Form.Label>
-                            <Form.Control onChange={handleChange} name="image" disabled={!props.editable} type="text" placeholder="Image URL" value={values.image} />
-                        </Form.Group>
-
-                        <Form.Group controlId={"nftmeta-ext-url"+values.NFTID}>
-                            <Form.Label>External URL</Form.Label>
-                            <Form.Control onChange={handleChange} name="external_url"  disabled={!props.editable} type="text" value={values.external_url} />
-                        </Form.Group>
-
-                        <Form.Group controlId={"nftmeta-youtube-url"+values.NFTID}>
-                            <Form.Label>Youtube URL</Form.Label>
-                            <Form.Control onChange={handleChange} name="youtube_url"  disabled={!props.editable} type="text" value={values.youtube_url} />
+                            <Form.Control onChange={handleChange} name="image" disabled={!props.editable} type="text" placeholder="Used to visually represent the thing you own" value={values.image} />
                         </Form.Group>
 
                         <Form.Group controlId={"nftmeta-animation-url"+values.NFTID}>
                             <Form.Label>Animation URL</Form.Label>
-                            <Form.Control onChange={handleChange} name="animation_url" disabled={!props.editable} type="text" value={values.animation_url} />
+                            <Form.Control onChange={handleChange} name="animation_url" disabled={!props.editable} type="text" value={values.animation_url} placeholder="It's like an image from Harry Potter" />
                         </Form.Group>
+
+                        <Form.Group controlId={"nftmeta-ext-url"+values.NFTID}>
+                            <Form.Label>External URL</Form.Label>
+                            <Form.Control onChange={handleChange} name="external_url"  disabled={!props.editable} type="text" value={values.external_url} placeholder="This is the URL to the thing you want to own (e.g., a comment on Reddit)" />
+                        </Form.Group>
+
+                        <Form.Group controlId={"nftmeta-youtube-url"+values.NFTID}>
+                            <Form.Label>Youtube URL</Form.Label>
+                            <Form.Control onChange={handleChange} name="youtube_url"  disabled={!props.editable} type="text" value={values.youtube_url} placeholder="Youtube was a popular site for hosting videos in the early 2000s (not required)" />
+                        </Form.Group>
+
                     </Col>
                 </Row>
                 </>

@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
 import config from '../../services/config.js';
@@ -140,59 +140,101 @@ function Custom(props) {
 	};
 
 	return (
-		<div>
-			<Form>
-                { !order ? <NFTMeta meta={nftMeta} editable={!isCheckingOut} changes={(v) => setNFTMeta(v)}></NFTMeta> : <NFTMeta meta={order.NFTMeta} editable={false} changes={(v) => setNFTMeta(v)}></NFTMeta> }
-				{
-					!isCheckingOut ? 
-					<Button variant="primary" onClick={previewCustom} disabled={!checkoutReady}>
-						Go to Checkout
-					</Button>
-					: 				
-					<Button variant="default" onClick={handleClear}>
-						Edit
-					</Button>
-				}
-			</Form>
+		<>
 
-			{ order ?
-				<div>
-					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
-					<Row>
-						<Col className="col-md-6 col-12">
-							<Form>
-								<Form.Group controlId="totalPrice">
-									<ReactTooltip
-										multiline={true}>
-											{order.PriceDetails.LineItems.map((li, idx) => {
-												return <div key={idx}>{li}</div>
-											})}
-									</ReactTooltip>
-										<Form.Label><h5>Total Price</h5></Form.Label><InfoCircleFill data-tip="price-details" style={{marginLeft:"10px"}}></InfoCircleFill>
-										<Form.Control readOnly={true} type="text" value={`${order.etherValue} ETH - ($${order.usdValue} + gas)`} />
-								</Form.Group>
-								<Form.Group controlId="connectWallet">
-								<Button disabled={walletConnected} variant="primary" onClick={handleConnectWallet}>
-									1. Connect Wallet
-								</Button>
-								<Form.Text className="text-muted">
-									By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract. This NFT does not pretend to be the original and service of contract metadata could potentially be hindered by the other party. You are also acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
-								</Form.Text>
-								</Form.Group>
-								<Form.Group>
-								<Button disabled={!walletConnected} variant="primary" onClick={handleCheckout}>
-									2. Finish Transaction to Mint NFT
-								</Button>
-								</Form.Group>
-							</Form>
-						</Col>
-					</Row>
+			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px", marginTop:"0px"}} />
+				<h1 class="display-5">NFT the Web</h1> 
+			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px"}} />
+			<Row>
+				<Col className="col-md-4">
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+                        <Card.Body>
+                            <Card.Title>Step 1</Card.Title>
+                            <Card.Text>
+								<a href="https://bing.com" target="_blank" rel="noreferrer">Find some content</a> you love or want to sell or control.
+                            </Card.Text>
+                        </Card.Body>
+					</Card>
+				</Col>
+				<Col className="col-md-4">
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+                        <Card.Body>
+                            <Card.Title>Step 2</Card.Title>
+                            <Card.Text>
+								Paste the details into the form below.
+                            </Card.Text>
+                        </Card.Body>
+					</Card>
+				</Col>
+				<Col className="col-md-4">
+					<Card style={{minHeight: "100%", boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+                        <Card.Body>
+                            <Card.Title>Step 3</Card.Title>
+                            <Card.Text>
+								Inform the content creator you now own their workproduct. <span style={{opacity:"50%"}}>See our FAQs for a handy form letter</span>
+                            </Card.Text>
+                        </Card.Body>
+					</Card>
+				</Col>
+			</Row>  
 
-				</div>
-				: null
-			}
+			<Row style={{marginTop:"20px"}}>
+				<Col md={{ span: 10, offset: 1    }}>
+					<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px", marginBottom:"15px", marginTop:"35px"}}/>
+					<Form>
+						{ !order ? <NFTMeta meta={nftMeta} editable={!isCheckingOut} changes={(v) => setNFTMeta(v)}></NFTMeta> : <NFTMeta meta={order.NFTMeta} editable={false} changes={(v) => setNFTMeta(v)}></NFTMeta> }
+						{
+							!isCheckingOut ? 
+							<Button variant="primary" onClick={previewCustom} disabled={!checkoutReady}>
+								Go to Checkout
+							</Button>
+							: 				
+							<Button variant="default" onClick={handleClear}>
+								Edit
+							</Button>
+						}
+					</Form>
 
-		</div>
+					{ order ?
+						<div>
+							<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
+							<Row>
+								<Col className="col-md-6 col-12">
+									<Form>
+										<Form.Group controlId="totalPrice">
+											<ReactTooltip
+												multiline={true}>
+													{order.PriceDetails.LineItems.map((li, idx) => {
+														return <div key={idx}>{li}</div>
+													})}
+											</ReactTooltip>
+												<Form.Label><h5>Total Price</h5></Form.Label><InfoCircleFill data-tip="price-details" style={{marginLeft:"10px"}}></InfoCircleFill>
+												<Form.Control readOnly={true} type="text" value={`${order.etherValue} ETH - ($${order.usdValue} + gas)`} />
+										</Form.Group>
+										<Form.Group controlId="connectWallet">
+										<Button disabled={walletConnected} variant="primary" onClick={handleConnectWallet}>
+											1. Connect Wallet
+										</Button>
+										<Form.Text className="text-muted">
+											By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract. This NFT does not pretend to be the original and service of contract metadata could potentially be hindered by the other party. You are also acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
+										</Form.Text>
+										</Form.Group>
+										<Form.Group>
+										<Button disabled={!walletConnected} variant="primary" onClick={handleCheckout}>
+											2. Finish Transaction to Mint NFT
+										</Button>
+										</Form.Group>
+									</Form>
+								</Col>
+							</Row>
+
+						</div>
+						: null
+					}
+
+				</Col>
+			</Row>
+		</>
 	);
 }
 

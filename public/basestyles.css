@@ -1,0 +1,27 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#root{
+    min-height: 100%;
+    margin-bottom: -50px;
+}
+
+.push {
+    min-height:50px;
+}
+
+.footer {
+    background-image: linear-gradient(to right, #5f3be3, #e33b3b);
+    min-height:50px;
+    margin-bottom:0px;
+    margin-top:-50px;
+}
+
+.footer > a {
+    float: right;
+    margin-right: 10%;
+    margin-top:8px;
+    color:white;
+}
