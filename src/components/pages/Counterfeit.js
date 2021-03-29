@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { useLocation, useHistory } from 'react-router-dom';
 import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
 import config from '../../services/config.js';
@@ -21,12 +22,20 @@ import { InfoCircleFill } from 'react-bootstrap-icons';
 // 	return false;
 // }
 
+
 function Counterfeit(props) {
 	// https://testnets.opensea.io/assets/0x99bae45fb8abab73d8969fad837f5287ec294eea/1
+	let { search } = useLocation();
+	const history = useHistory()
 
-	let [ counterfeitContractAddr, setCounterfeitContractAddr ] = useState("");
-	let [ counterfeitTokenId, setCounterfeitTokenId ] = useState("");
-	let [ includeRugPull, setIncludeRugPull ] = useState(false);
+	const query = new URLSearchParams(search);
+	const contractParam = query.get('contract');
+	const tokenParam = query.get('token');
+	const includeRugPullParam = query.get('rugpull');
+
+	let [ counterfeitContractAddr, setCounterfeitContractAddr ] = useState(contractParam);
+	let [ counterfeitTokenId, setCounterfeitTokenId ] = useState(tokenParam);
+	let [ includeRugPull, setIncludeRugPull ] = useState(!!includeRugPullParam);
 	let [ rugPullDate, setRugPullDate ] = useState(moment().add(1, "month").format("YYYY-MM-DD"));
 	let [ rugPullTime, setRugPullTime ] = useState("12:00");
 	let [ checkoutReady, setIsCheckoutReady ] = useState(false);
@@ -35,9 +44,34 @@ function Counterfeit(props) {
 	let [ order, setOrder ] = useState(null);
 	let [ provider, setProvider ] = useState(null);
 	let [ rugPullMeta, setRugPullMeta ] = useState(null);
-
+	let [ quickloadPreview, setQuickloadPreview ] = useState(contractParam && tokenParam);
 
 	useEffect(() => {
+		if (!checkoutReady) {
+			return;
+		}
+
+		if (quickloadPreview) {
+			setQuickloadPreview(false);
+			previewCounterfeit();
+		}
+
+	}, [checkoutReady])
+
+	useEffect(() => {
+		const params = new URLSearchParams()
+		if (counterfeitContractAddr) {
+			params.append("contract", counterfeitContractAddr)
+		} 
+		if (counterfeitTokenId) {
+			params.append("token", counterfeitTokenId)
+		}
+		if (includeRugPull) {
+			params.append("rugpull", true)
+		}
+		history.push({search: params.toString()})
+
+
 		let hasTokenDetails = !!counterfeitContractAddr && !!counterfeitTokenId;
 		if (includeRugPull) {
 			setIsCheckoutReady(hasTokenDetails && !!rugPullDate && !!rugPullTime);
@@ -84,7 +118,7 @@ function Counterfeit(props) {
 	}
 
 	let previewCounterfeit = async (e) => {
-		e.preventDefault();
+		!!e && e.preventDefault();
 		console.log(counterfeitTokenId, counterfeitContractAddr);
 
 		try {
@@ -124,6 +158,11 @@ function Counterfeit(props) {
 		setIncludeRugPull(false);
 		setOrder(null);
 		setRugPullMeta(null);
+	};
+
+	let handleEdit = (e) => {
+		e.preventDefault();
+		setOrder(null);
 	};
 
 	let handleConnectWallet = async (e) => {
@@ -249,10 +288,15 @@ function Counterfeit(props) {
 					<Button variant="primary" onClick={previewCounterfeit} disabled={!checkoutReady}>
 						Preview
 					</Button>
-					: 				
+					: 	
+					<>
+					<Button variant="primary" onClick={handleEdit}>
+						Edit
+					</Button>			
 					<Button variant="default" onClick={handleClear}>
 						Clear
 					</Button>
+					</>
 				}
 			</Form>
 
