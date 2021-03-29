@@ -22,6 +22,7 @@ const abi = [
 
 function TakeOwnership(props) {
 	let [ provider, setProvider ] = useState(null);
+	let [ readProvider, setReadProvider ] = useState(null);
 	let [ walletConnected, setIsWalletConnected ] = useState(false);
 	let [ priceParams, setPriceParams ] = useState({});
 	let [ isKeyTokenOwner, setIsKeyTokenOwner ] = useState(false);
@@ -33,7 +34,41 @@ function TakeOwnership(props) {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			setProvider(provider);
 		}
+
+		const reader = new ethers.providers.EtherscanProvider(config.env, config.etherscanAPIKey);
+        setReadProvider(reader);
 	}, []);
+
+	useEffect(() => {
+        let f = async () => {
+            if (!readProvider) { return ;}
+            try {
+                let readContract = new ethers.Contract(config.contractAddr, abi, readProvider);
+                
+				let basePrice = await readContract.basePriceUSD();
+				let hashCountModifier = await readContract.priceModifierHashCount();
+				let totalCountModifier = await readContract.priceModifierTotalMintedCount();
+				let intervalCountModifier = await readContract.priceModifierIntervalCount();
+				let intervalStartUnixSeconds = await readContract.intervalStartUnixSeconds();
+				let intervalLengthSeconds = await readContract.intervalLengthSeconds();
+
+				let intervalStartDate = moment.unix(intervalStartUnixSeconds);
+				let intervalDuration = moment.duration(intervalLengthSeconds, "seconds").humanize(false); 
+
+				setPriceParams({
+					basePrice: basePrice.toNumber(),
+					hashCountMutliplier: hashCountModifier.toNumber(),
+					totalCountMultiplier: totalCountModifier.toNumber(),
+					timeMultiplier: intervalCountModifier.toNumber(),
+					intervalStartDate: intervalStartDate,
+					intervalDuration: intervalDuration
+				});
+            } catch (e) {
+                console.log("error trying to get base usd price", e)
+            }
+        };
+        f();
+    }, [readProvider]);
 
 	useEffect(() => {
 		let f = async () => {
@@ -51,25 +86,6 @@ function TakeOwnership(props) {
 					setIsKeyTokenOwner(true);
 				}
 			}
-
-			let basePrice = await contract.basePriceUSD();
-			let hashCountModifier = await contract.priceModifierHashCount();
-			let totalCountModifier = await contract.priceModifierTotalMintedCount();
-			let intervalCountModifier = await contract.priceModifierIntervalCount();
-			let intervalStartUnixSeconds = await contract.intervalStartUnixSeconds();
-			let intervalLengthSeconds = await contract.intervalLengthSeconds();
-
-			let intervalStartDate = moment.unix(intervalStartUnixSeconds);
-			let intervalDuration = moment.duration(intervalLengthSeconds, "seconds").humanize(false); 
-
-			setPriceParams({
-				basePrice: basePrice.toNumber(),
-				hashCountMutliplier: hashCountModifier.toNumber(),
-				totalCountMultiplier: totalCountModifier.toNumber(),
-				timeMultiplier: intervalCountModifier.toNumber(),
-				intervalStartDate: intervalStartDate,
-				intervalDuration: intervalDuration
-			});
 		};
 		f();
 	}, [provider]);
@@ -159,7 +175,7 @@ function TakeOwnership(props) {
 
 			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px", marginBottom:"15px", marginTop:"35px"}}/>
 
-			{ priceParams && <Form>
+			{ priceParams.basePrice && <Form>
 				<h3 class="display-5">Only the owner can edit these values</h3>
 				<Form.Group controlId="totalPrice">
 					<Form.Label><h5>Base Price USD</h5></Form.Label>

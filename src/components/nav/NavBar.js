@@ -35,7 +35,7 @@ function NavBar() {
                 let basePrice = await contract.basePriceUSD();
                 setCurrBasePrice(basePrice.toNumber());
 
-                let ownerBal = await contract.balances(1);
+                let ownerBal = await contract.balances(0);
                 setCurrOwnerBal(ethers.utils.formatEther(ownerBal.toString()));
             } catch (e) {
                 console.log("error trying to get base usd price", e)
