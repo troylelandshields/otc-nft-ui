@@ -14,7 +14,7 @@ function Home(props) {
 				<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px"}} />
 				<p>Ready to get started? Head on over to the <Link to="counterfeit">minting presses</Link> to try it out. Curious to learn more about how it works? Keep reading below or check out our FAQs.</p>
 				<p className="lead">
-					<Link to="faqs" className="btn btn-primary btn-sm">Learn more</Link>
+					<Link to="faq" className="btn btn-primary btn-sm">Learn more</Link>
 					<Link to="own" className="btn btn-default btn-sm">Buy this marketplace</Link>
 				</p>
 			</Jumbotron>
