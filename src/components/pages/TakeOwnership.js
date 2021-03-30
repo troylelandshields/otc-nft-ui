@@ -79,7 +79,9 @@ function TakeOwnership(props) {
 			let contract = new ethers.Contract(config.contractAddr, abi, provider);
 			setContractClient(contract);
 
-			let ownerOfKey = await contract.ownerOf(config.keyToken);
+			let nftContract = new ethers.Contract(config.nftAddr, abi, provider);
+
+			let ownerOfKey = await nftContract.ownerOf(config.keyToken);
 
 			for (let account of accounts) {
 				if (account === ownerOfKey) {
@@ -129,7 +131,8 @@ function TakeOwnership(props) {
                         <Card.Body>
                             <Card.Title>Step 1</Card.Title>
                             <Card.Text>
-								<a href="https://bing.com" target="_blank" rel="noreferrer">Buy the Key NFT that indicates who owns overthecounter.icu.</a>
+								{/* TODO: this needs to be more dynamic based on the configs */}
+								<a href={`https://testnets.opensea.io/assets/0x944bce254c9ac0c6b17a0206b889e1e4129752d9/${config.keyToken}`} target="_blank" rel="noreferrer">Buy the Key NFT that indicates who owns overthecounter.icu.</a>
                             </Card.Text>
                         </Card.Body>
 					</Card>
@@ -157,7 +160,7 @@ function TakeOwnership(props) {
 			</Row>  
 			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px", marginBottom:"15px", marginTop:"35px"}}/>
             <Row style={{marginTop:"25px"}}>
-                <Col>
+                <Col style={{marginLeft:"5px"}} md={{offset:1}}>
 					<Form>
 						<Row>
 							<Button disabled={walletConnected} className="btn-primary btn-lg" onClick={handleConnectWallet}>

@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import { Row, Col, Card, Figure } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../services/config.js';
@@ -93,16 +93,26 @@ function FAQ(props) {
                             <Card.Text>
                                 <p>NFTs are an interesting idea that probably has a handful of legitimate use-cases.</p>
                                 <p>However, just like the ICO craze of 2017, it seems the crypto world cannot resist the temptation to take an intriguing concept and milk it for all its worth with get-rich-quick schemes.</p>
-                                <p>So, OverTheCounter.icu is an interactive art-piece, ownable as an NFT, that's poking fun at this NFT bubble while itself being a get-rich-quick scheme.</p>
+                                <p style={{fontSize:"25px"}}>OverTheCounter.icu is an interactive art-piece, ownable as an NFT, that's poking fun at this NFT bubble while itself being a get-rich-quick scheme.</p>
                                 <p>If you're purchasing an NFT to own some art from a marketplace such as OpenSea, then the rational choice would be to create an Over the Counter bootleg of that same NFT here.</p>
                                 <p>If the NFT your purchasing needs to be a "real" one for you to interact with it on some platform such as Crypto Kitties, well then now we've come to the centralized/decentralized paradox. 
                                     If the <i>true</i> value of owning an NFT comes from a central party (such as Crypto Kitties), then why have we decentralized the ownership when it could have been done in a way that was cheaper, easier, 
                                     and better for the environment by the central party in the first place.</p>
                                 <p>An NFT is probably only worth owning if the owner gets to do something unique while they own it. Just like the real world, the vast majority of NFTs from OverTheCounter.icu have no special priveleges for their owners; 
                                     however, the owner of the Key token does get the right to take ownership of this marketplace, including the power to change the pricing model and to collect all of the profits</p>
+                                <p>In conclusion, please enjoy the quote below about NFTs and ask yourself, if Rinkeby Legends (whatever that is) shut down tomorrow (seems likely), would you even still <i>want</i> your Rinkeby Legends cards?</p>
                             </Card.Text>
                         </Card.Body>
                     </Card>
+                    
+                    <Figure style={{boxShadow: "1px 1px 4px #5f3be3", marginTop:"20px"}}>
+                        <a href="https://medium.com/nifty-gateway/the-nifty-gateway-blockchain-wallet-explainer-d4c7156f480a" target="_blank" rel="noreferrer">
+                            <Figure.Image
+                                src="tomorrow.png"
+                            />
+                        </a>
+                    </Figure>
+
                 </Col>
             </Row>  
         </>
