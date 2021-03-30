@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Row, Col, Form, Button, Card, Spinner } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Spinner, Modal } from 'react-bootstrap';
 import NFTMeta from '../ui/nftmeta.js';
 import axios from 'axios';
 import config from '../../services/config.js';
@@ -20,6 +20,20 @@ import { InfoCircleFill } from 'react-bootstrap-icons';
 // 	}
 // 	return false;
 // }
+
+const abi = [
+	// "setIntervalDetails(uint256 _intervalStartUnixSeconds, uint256 _intervalLengthSeconds)",
+	"function ownerOf(uint256 tokenId) view returns (address)",
+	"function owner() public view returns (address)",
+	"function basePriceUSD() public view returns (uint64)",
+	"function priceModifierHashCount() public view returns (int64)",
+	"function priceModifierTotalMintedCount() public view returns (int64)",
+	"function priceModifierIntervalCount() public view returns (int64)",
+	"function intervalLengthSeconds() public view returns (uint64)",
+	"function intervalStartUnixSeconds() public view returns (uint64)",
+	"function takeOwnership() public",
+	"function purchase(uint256 _order, uint256 gasMoney) external payable"
+]
 
 function Custom(props) {
 	// https://testnets.opensea.io/assets/0x99bae45fb8abab73d8969fad837f5287ec294eea/1
@@ -122,11 +136,22 @@ function Custom(props) {
 	let handleCheckout = async (e) => {
 		setLoadingCheckout(true);
 		try {
+			// let signer = provider.getSigner();
+			// // const trxn = await signer.sendTransaction({
+			// // 	to: order.OTCMarketContractAddr,
+			// // 	value: ethers.BigNumber.from(order.TotalPriceInWei+"")
+			// // });
+			
+			let expirationTime = moment(order.ExpiresAt);
+			if expirationTime.isBefore(moment()) {
+				throw
+			} 
+
 			let signer = provider.getSigner();
-			const trxn = await signer.sendTransaction({
-				to: order.OTCMarketContractAddr,
-				value: ethers.BigNumber.from(order.TotalPriceInWei+"")
-			});
+			let contractClient = new ethers.Contract(config.contractAddr, abi, provider);
+			let contractWithSigner = contractClient.connect(signer);
+			// {value: 25000}
+			const trxn = await contractWithSigner.purchase(ethers.BigNumber.from(`0x${order.OrderID.replaceAll("-", "")}`), ethers.BigNumber.from(order.PriceDetails.GasFee), {value: ethers.BigNumber.from(order.TotalPriceInWei+"")});
 
 			await axios.post(`${config.apiHost}/api/v1/mint/${order.OrderID}`, {
 				"OrderID": order.OrderID,
@@ -252,6 +277,21 @@ function Custom(props) {
 
 				</Col>
 			</Row>
+
+			<Modal show={show} onHide={handleClose}>
+				<Modal.Header closeButton>
+					<Modal.Title>OTC</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+				<Modal.Footer>
+				<Button variant="secondary" onClick={handleClose}>
+					Close
+				</Button>
+				<Button variant="primary" onClick={handleClose}>
+					Save Changes
+				</Button>
+				</Modal.Footer>
+			</Modal>
 		</>
 	);
 }

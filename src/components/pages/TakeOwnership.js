@@ -10,13 +10,14 @@ const abi = [
 	// "setIntervalDetails(uint256 _intervalStartUnixSeconds, uint256 _intervalLengthSeconds)",
 	"function ownerOf(uint256 tokenId) view returns (address)",
 	"function owner() public view returns (address)",
-	"function basePriceUSD() public view returns (uint256)",
-	"function priceModifierHashCount() public view returns (uint256)",
-	"function priceModifierTotalMintedCount() public view returns (uint256)",
-	"function priceModifierIntervalCount() public view returns (uint256)",
-	"function intervalLengthSeconds() public view returns (uint256)",
-	"function intervalStartUnixSeconds() public view returns (uint256)",
-	"function takeOwnership() public"
+	"function basePriceUSD() public view returns (uint64)",
+	"function priceModifierHashCount() public view returns (int64)",
+	"function priceModifierTotalMintedCount() public view returns (int64)",
+	"function priceModifierIntervalCount() public view returns (int64)",
+	"function intervalLengthSeconds() public view returns (uint64)",
+	"function intervalStartUnixSeconds() public view returns (uint64)",
+	"function takeOwnership() public",
+	"function purchase(uint256 _order, uint256 gasMoney) external payable"
 ]
 
 
