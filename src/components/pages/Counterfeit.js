@@ -1,8 +1,9 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useState, useCallback } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Row, Col, Form, Button, Card, Spinner } from 'react-bootstrap';
 import { useLocation, useHistory } from 'react-router-dom';
 import NFTMeta from '../ui/nftmeta.js';
+import Checkout from '../ui/checkout.js';
 import axios from 'axios';
 import config from '../../services/config.js';
 // import Web3 from 'web3';
@@ -40,25 +41,11 @@ function Counterfeit(props) {
 	let [ rugPullTime, setRugPullTime ] = useState("12:00");
 	let [ checkoutReady, setIsCheckoutReady ] = useState(false);
 	let [ isCheckingOut, setIsCheckingOut ] = useState(false);
-	let [ walletConnected, setIsWalletConnected ] = useState(false);
 	let [ order, setOrder ] = useState(null);
-	let [ provider, setProvider ] = useState(null);
 	let [ rugPullMeta, setRugPullMeta ] = useState(null);
 	let [ quickloadPreview, setQuickloadPreview ] = useState(contractParam && tokenParam);
 	let [ loadingPreview, setLoadingPreview ] = useState(false);
-	let [ loadingCheckout, setLoadingCheckout ] = useState(false);
 
-	useEffect(() => {
-		if (!checkoutReady) {
-			return;
-		}
-
-		if (quickloadPreview) {
-			setQuickloadPreview(false);
-			previewCounterfeit();
-		}
-
-	}, [checkoutReady])
 
 	useEffect(() => {
 		const params = new URLSearchParams()
@@ -80,27 +67,11 @@ function Counterfeit(props) {
 			return;
 		}
 		setIsCheckoutReady(hasTokenDetails);
-	}, [counterfeitContractAddr, counterfeitTokenId, includeRugPull, rugPullDate, rugPullTime]);
+	}, [counterfeitContractAddr, counterfeitTokenId, includeRugPull, rugPullDate, rugPullTime, history]);
 
 	useEffect(() => {
 		setIsCheckingOut(!!order);
 	}, [order]);
-
-
-	useEffect(() => {
-		if (window.ethereum) {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			setProvider(provider);
-		}
-	}, [order]);
-
-	useEffect(() => {
-		let f = async () => {
-			if (!provider) { return; }
-			setIsWalletConnected(await provider.listAccounts() > 0);
-		};
-		f();
-	}, [provider]);
 
 	let parseAndSetCounterfeitAddr = (val) => {
 		let parts = val.split("assets");
@@ -119,7 +90,7 @@ function Counterfeit(props) {
 		setCounterfeitTokenId(details[2]);
 	}
 
-	let previewCounterfeit = async (e) => {
+	let previewCounterfeit = useCallback(async (e) => {
 		!!e && e.preventDefault();
 		setLoadingPreview(true);
 		console.log(counterfeitTokenId, counterfeitContractAddr);
@@ -153,10 +124,24 @@ function Counterfeit(props) {
 			alert("It looks like that NFT isn't yet supported by OTC; we're working on it, but in the meantime try another one.")
 		}
 		setLoadingPreview(false);
-	};
+	}, [includeRugPull, rugPullDate, rugPullTime, counterfeitContractAddr, counterfeitTokenId]);
+
+	useEffect(() => {
+		if (!checkoutReady) {
+			return;
+		}
+
+		if (quickloadPreview) {
+			setQuickloadPreview(false);
+			previewCounterfeit();
+		}
+
+	}, [checkoutReady, quickloadPreview, previewCounterfeit])
 
 	let handleClear = (e) => {
-		e.preventDefault();
+		if (e) {
+			e.preventDefault();
+		}
 		setCounterfeitContractAddr("");
 		setCounterfeitTokenId("");
 		setIncludeRugPull(false);
@@ -167,44 +152,6 @@ function Counterfeit(props) {
 	let handleEdit = (e) => {
 		e.preventDefault();
 		setOrder(null);
-	};
-
-	let handleConnectWallet = async (e) => {
-		try {
-			await window.ethereum.request({ method: 'eth_requestAccounts' });
-			setIsWalletConnected(true);
-		} catch (e) {
-			console.log("Error requesting accounts", e);
-		}
-	};
-
-	let handleCheckout = async (e) => {
-		setLoadingCheckout(true);
-		try {
-			let signer = provider.getSigner();
-			const trxn = await signer.sendTransaction({
-				to: order.OTCMarketContractAddr,
-				value: ethers.BigNumber.from(order.TotalPriceInWei+"")
-			});
-
-			await axios.post(`${config.apiHost}/api/v1/mint/${order.OrderID}`, {
-				"OrderID": order.OrderID,
-				"PaymentTransactionID": trxn.hash,
-				"DestinationAddress": trxn.from,
-				"NFTMeta": rugPullMeta
-			});
-
-			alert("Success! You'll have a newly minted NFT shortly");
-			setCounterfeitContractAddr("");
-			setCounterfeitTokenId("");
-			setIncludeRugPull(false);
-			setRugPullMeta(null);
-			setOrder(null);
-		} catch (e) {
-			console.log("Error finishing transaction", e);
-			alert("Uhhh, something went wrong... contact me about getting this worked out.")
-		}
-		setLoadingCheckout(false);
 	};
 
 	return (
@@ -314,64 +261,24 @@ function Counterfeit(props) {
 
 			<hr style={{backgroundImage: "linear-gradient(to right, #5f3be3, #e33b3b)", height:"1px"}} />
 
-			{ order ?
-				<div>
-					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
-					<Row>
+			{ order ? <>
+				<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
+				<Row>
 						<Col className="col-md-6">
-							<h3>
-								Contract Details
-							</h3>
-							<NFTMeta meta={order.NFTMeta}></NFTMeta>
+								<h3>
+									Contract Details
+								</h3>
+								<NFTMeta meta={order.NFTMeta}></NFTMeta>
 						</Col>
 						{ includeRugPull ? <Col className="col-md-6">
-							<h3>
-								Rug Pull Details
-							</h3>
-							<NFTMeta meta={order.NFTMeta} editable={true} changes={(v) => setRugPullMeta(v)}></NFTMeta>
+								<h3>
+									Rug Pull Details
+								</h3>
+								<NFTMeta meta={order.NFTMeta} editable={true} changes={(v) => setRugPullMeta(v)}></NFTMeta>
 						</Col> : null }
-					</Row>
-
-
-					<hr style={{marginTop:"30px", marginBottom:"30px"}}></hr>
-					<Row>
-						<Col className="col-md-6 col-12">
-							<Form>
-								<Form.Group controlId="totalPrice">
-									<ReactTooltip
-										multiline={true}>
-											{order.PriceDetails.LineItems.map((li, idx) => {
-												return <div key={idx}>{li}</div>
-											})}
-									</ReactTooltip>
-										<Form.Label><h5>Total Price</h5></Form.Label><InfoCircleFill data-tip="price-details" style={{marginLeft:"10px"}}></InfoCircleFill>
-										<Form.Control readOnly={true} type="text" value={`${order.etherValue} ETH - ($${order.usdValue} + gas)`} />
-								</Form.Group>
-								<Form.Group controlId="connectWallet">
-								<Button disabled={walletConnected} variant="primary" onClick={handleConnectWallet}>
-									1. Connect Wallet
-								</Button>
-								<Form.Text className="text-muted">
-									By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract. This NFT does not pretend to be the original and service of contract metadata could potentially be hindered by the other party. You are also acknowledging that this platform is someone's interactive art side-project, and therefore support for any technical issues is likely to be slow but earnest.
-								</Form.Text>
-								</Form.Group>
-								<Form.Group>
-								<Button disabled={!walletConnected || loadingCheckout} variant="primary" onClick={handleCheckout}>
-									{ loadingCheckout ? <Spinner
-										as="span"
-										animation="grow"
-										size="sm"
-										role="status"
-										aria-hidden="true"
-									/> : "2. Finish Transaction to Mint NFT" }
-								</Button>
-								</Form.Group>
-							</Form>
-						</Col>
-					</Row>
-
-				</div>
-				: null
+				</Row> 
+				<Checkout order={order} nftMeta={rugPullMeta} handleDone={handleClear} clearOrder={() => setOrder(null)} isCounterfeit={true}></Checkout>
+				</> : null
 			}
 
 		</div>

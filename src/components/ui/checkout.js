@@ -11,15 +11,6 @@ import { Check, InfoCircleFill } from 'react-bootstrap-icons';
 // const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 // web3.eth.getAccounts().then(console.log);
 
-// const ethEnabled = () => {
-// 	if (window.ethereum) {
-// 	  window.web3 = new Web3(window.ethereum);
-// 	  window.ethereum.enable();
-// 	  return true;
-// 	}
-// 	return false;
-// }
-
 const abi = [
 	// "setIntervalDetails(uint256 _intervalStartUnixSeconds, uint256 _intervalLengthSeconds)",
 	"function ownerOf(uint256 tokenId) view returns (address)",
@@ -35,13 +26,10 @@ const abi = [
 ]
 
 function Checkout(props) {
-
-	// let [ nftMeta, setNFTMeta ] = useState(props.nftMeta);
 	let [ walletConnected, setIsWalletConnected ] = useState(false);
-	// let [ order, setOrder ] = useState(props.order);
 	let [ provider, setProvider ] = useState(null);
 	let [ loadingCheckout, setLoadingCheckout ] = useState(false);
-    let [ modalDetails, setModalDetails ] = useState(null);
+    let [ modalDetails, setModalDetails ] = useState({});
 
 
 	useEffect(() => {
@@ -64,7 +52,7 @@ function Checkout(props) {
         if (modalDetails.onClose) {
             modalDetails.onClose();
         }
-        setModalDetails(null);
+        setModalDetails({});
     }
 
 	let handleConnectWallet = async (e) => {
@@ -79,15 +67,16 @@ function Checkout(props) {
 	let handleCheckout = async (e) => {
 		setLoadingCheckout(true);
 		try {
-			let expirationTime = moment(props.props.order.ExpiresAt);
+			let expirationTime = moment(props.order.ExpiresAt);
 			if (expirationTime.isBefore(moment())) {
 				setModalDetails({
                     title: "That order has expired",
-                    message: "Try recreating the NFT you want to purchase, that order has expired.",
+                    message: "That order has expired, try recreating the NFT you are trying to purchase",
                     onClose: () => {
-                        props.clearOrder()
+                        props.clearOrder();
                     }
                 });
+                return;
 			} 
 
 			let signer = provider.getSigner();
@@ -108,22 +97,28 @@ function Checkout(props) {
                 console.log("Error finishing executing request to mint", e);
                 setModalDetails({
                     title: "Uh oh!",
-                    message: "Something went wrong, please use the contact me button at the bottom of the page to let me know about this"
+                    message: "Something went wrong, but we'll get your NFT minted either way. Please contact me for technical assistance."
                 });
+                props.clearOrder();
+                return
             }
 
             setModalDetails({
                 title: "Success!",
                 message: "Thank you! You'll have a newly minted NFT available for your pleasure soon.",
                 onClose: () => {
-                    props.clearOrder()
+                    props.clearOrder();
+                    props.handleDone();
                 }
             });
 		} catch (e) {
 			console.log("Error executing transaction", e);
 			setModalDetails({
                 title: "Uh oh!",
-                message: "Hmm, it looks like we ran into some trouble processing this request"
+                message: "Hmm, it looks like we ran into some trouble processing this request",
+            onClose: () => {
+                    props.clearOrder();
+                }
             });
 		}
 		setLoadingCheckout(false);
@@ -150,9 +145,14 @@ function Checkout(props) {
                             <Button disabled={walletConnected} variant="primary" onClick={handleConnectWallet}>
                                 1. Connect Wallet
                             </Button>
-                            <Form.Text className="text-muted">
-                                By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract. This NFT does not pretend to be the original and service of contract metadata could potentially be hindered by the other party. You are also acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
+                            { props.isCounterfeit ? <Form.Text className="text-muted">
+                                By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract.
+                                The NFT you will receive does not pretend to be the original and service of contract metadata could potentially be hindered by the other party.
+                                You are also acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
                             </Form.Text>
+                            : <Form.Text className="text-muted">
+                                By submitting this transaction, you are acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
+                            </Form.Text> }
                             </Form.Group>
                             <Form.Group>
                             <Button disabled={!walletConnected || loadingCheckout} variant="primary" onClick={handleCheckout}>
@@ -171,11 +171,11 @@ function Checkout(props) {
 
             </div>
 
-			<Modal show={!!modalDetails} onHide={handleClose}>
+			<Modal show={!!modalDetails.title} onHide={handleClose}>
 				<Modal.Header closeButton>
-					<Modal.Title>modalDetails.title</Modal.Title>
+					<Modal.Title>{modalDetails.title}</Modal.Title>
 				</Modal.Header>
-				<Modal.Body>modalDetails.message</Modal.Body>
+				<Modal.Body>{modalDetails.message}</Modal.Body>
 				<Modal.Footer>
 				<Button variant="secondary" onClick={handleClose}>
 					Close
