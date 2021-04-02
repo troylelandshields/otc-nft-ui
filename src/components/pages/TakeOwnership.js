@@ -147,7 +147,7 @@ function TakeOwnership(props) {
                         <Card.Body>
                             <Card.Title>Step 2</Card.Title>
                             <Card.Text>
-								Click the take ownership button below. <span style={{opacity:"50%"}}>(The profits held by the contract will be released to the current owner).</span>
+								Click the take ownership button below and decide the total supply of NFTs that will be available in your series. <span style={{opacity:"50%", fontSize:"12px"}}>(The profits held by the contract will be released to the current owner).</span>
                             </Card.Text>
                         </Card.Body>
 					</Card>
@@ -157,7 +157,7 @@ function TakeOwnership(props) {
                         <Card.Body>
                             <Card.Title>Step 3</Card.Title>
                             <Card.Text>
-								Profit. <span style={{opacity:"50%"}}>(Literally. You will get the profits that this marketplace generates. Go read the smart contract if you must).</span>
+								Profit. <span style={{opacity:"50%",  fontSize:"12px"}}>(Literally. You will get the profits that this marketplace generates while you hold the Key NFT. Go read the smart contract if you must).</span>
                             </Card.Text>
                         </Card.Body>
 					</Card>
