@@ -26,18 +26,18 @@ function NFTMeta(props) {
     let displayElement = (handleChange, animationURL, imageURL) => {
         if (animationURL) {
             if (isModel(animationURL)) {
-                return <model-viewer style={{maxWidth:"100%"}} height="250px" auto-rotate="true" autoplay="true" camera-controls="true" src={animationURL} ar-status="not-presenting"></model-viewer>
+                return <model-viewer style={{maxWidth:"100%"}}  auto-rotate="true" autoplay="true" camera-controls="true" src={animationURL} ar-status="not-presenting"></model-viewer>
             } 
             if (isVideo(animationURL)) {
-                return <video style={{maxWidth:"100%"}} height="250px" muted={true} autoPlay={true} controlsList="nodownload" loop={true} preload="auto" src={animationURL}></video>
+                return <video style={{maxWidth:"100%"}}  muted={true} autoPlay={true} controlsList="nodownload" loop={true} preload="auto" src={animationURL}></video>
             } 
         }
 
         if (!imageURL) {
-            return <img style={{maxWidth:"100%", opacity:"70%"}} height="250px" src="https://picsum.photos/400/300" alt="Error loading contract pic"></img>
+            return <img style={{maxWidth:"100%", opacity:"70%"}}  src="https://picsum.photos/400/300" alt="Error loading contract pic"></img>
         }
 
-        return <img style={{maxWidth:"100%"}} height="250px" src={imageURL} alt="Error loading contract pic"></img>
+        return <img style={{maxWidth:"100%"}} src={imageURL} alt="Error loading contract pic"></img>
     };
 
 	return (
@@ -114,7 +114,7 @@ function NFTMeta(props) {
                 <Row>
                     <Col className="col-md-12">
                         <Form.Group controlId={"nftmeta-img-url"+values.NFTID}>
-                            <Form.Label>Image URL</Form.Label>
+                            <Form.Label>Image URL*</Form.Label>
                             <Form.Control onChange={handleChange} name="image" disabled={!props.editable} type="text" placeholder="Used to visually represent the thing you own" value={values.image} />
                         </Form.Group>
 

@@ -8,9 +8,14 @@ import Counterfeit from './components/pages/Counterfeit.js';
 import Custom from './components/pages/Custom.js';
 import TakeOwnership from './components/pages/TakeOwnership.js';
 import FAQ from './components/pages/FAQ.js';
-
+import Market from './components/pages/Market.js';
 import './App.css';
 import config from './services/config';
+
+// import ReactGA from 'react-ga';
+// ReactGA.initialize('G-QTBGPLR6YQ');
+// ReactGA.pageview(window.location.pathname + window.location.search);
+
 
 class App extends Component {
   render() {
@@ -22,6 +27,7 @@ class App extends Component {
           <Container style={{marginBottom:"75px"}}>
             <Switch>
               <Route exact path="/" component={Home} />
+              <Route exact path="/market" component={Market} />
               <Route exact path="/counterfeit" component={Counterfeit} />
               <Route exact path="/custom" component={Custom} />
               <Route exact path="/own" component={TakeOwnership} />

@@ -146,12 +146,13 @@ function Checkout(props) {
                                 1. Connect Wallet
                             </Button>
                             { props.isCounterfeit ? <Form.Text className="text-muted">
-                                By submitting this transaction, you are acknowledging that you understand that are purchasing a "copy" of an NFT from a different contract.
-                                The NFT you will receive does not pretend to be the original and service of contract metadata could potentially be hindered by the other party.
-                                You are also acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
+                                By submitting this transaction, you are acknowledging that you understand that are purchasing a "proxy" of an NFT from a different contract.
+                                The NFT you will receive does not pretend to be the original and service of contract metadata could potentially be hindered by the other party or blocked by resale platforms. You promise not to use this to defraud anyone for money 
+                                (pranking your friends is fine). You are also acknowledging that this platform is someone's side project and you are essentially donating to that; support for any technical issues is likely to be slow, but earnest.
                             </Form.Text>
                             : <Form.Text className="text-muted">
-                                By submitting this transaction, you are acknowledging that this platform is someone's side project, and therefore support for any technical issues is likely to be slow but earnest.
+                                By submitting this transaction, you are acknowledging that you understand these NFTs could be blocked by resale platforms at any time and that you are essentially donating to someone's side project 
+                                because you are nice. Because this is a side project, support for any technical issues is likely to be slow, but earnest.
                             </Form.Text> }
                             </Form.Group>
                             <Form.Group>
