@@ -16,7 +16,7 @@ const abi = [
 	"function priceModifierIntervalCount() public view returns (int64)",
 	"function intervalLengthSeconds() public view returns (uint64)",
 	"function intervalStartUnixSeconds() public view returns (uint64)",
-	"function takeOwnership() public",
+	"function takeOwnership(uint64 _seriesSupply) public",
 	"function purchase(uint256 _order, uint256 gasMoney) external payable"
 ]
 
@@ -73,6 +73,7 @@ function TakeOwnership(props) {
 
 	useEffect(() => {
 		let f = async () => {
+			try{
 			if (!provider) { return; }
 			let accounts = await provider.listAccounts();
 			setIsWalletConnected(accounts > 0);
@@ -80,15 +81,18 @@ function TakeOwnership(props) {
 			let contract = new ethers.Contract(config.contractAddr, abi, provider);
 			setContractClient(contract);
 
-			let nftContract = new ethers.Contract(config.nftAddr, abi, provider);
+			// let nftContract = new ethers.Contract(config.nftAddr, abi, provider);
 
-			let ownerOfKey = await nftContract.ownerOf(config.keyToken);
+			let ownerOfKey = await contract.ownerOf(config.keyToken);
 
 			for (let account of accounts) {
 				if (account === ownerOfKey) {
 					setIsKeyTokenOwner(true);
 				}
 			}
+		} catch (e) {
+			console.log("Error checking who is owner", e);
+		}
 		};
 		f();
 	}, [provider]);
@@ -111,7 +115,7 @@ function TakeOwnership(props) {
 		let contractWithSigner = contractClient.connect(signer);
 
 		try {
-			await contractWithSigner.takeOwnership();
+			await contractWithSigner.takeOwnership(100);
 		}
 		catch (e) {
 			alert("Error occurred trying to take ownership");

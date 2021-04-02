@@ -32,7 +32,7 @@ function Custom(props) {
 
 
 	useEffect(() => {
-		if (nftMeta.name) {
+		if (nftMeta && nftMeta.name) {
 			setIsCheckoutReady(true);
             return;
 		}
@@ -152,7 +152,7 @@ function Custom(props) {
 					</Form>
 
 					{ order ? 
-						<Checkout order={order} nftMeta={nftMeta} handleDone={() => setNFTMeta(null)} clearOrder={() => setOrder(null)}></Checkout>
+						<Checkout order={order} nftMeta={nftMeta} handleDone={() => setNFTMeta(zeroNFTMeta())} clearOrder={() => setOrder(null)}></Checkout>
 						: null
 					}
 				</Col>

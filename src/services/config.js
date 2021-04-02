@@ -4,9 +4,9 @@ const config = {
     env: "rinkeby",
     ethAPIProvider: "https://eth-rinkeby.alchemyapi.io/v2/sl7kpn-EhhbJ_6B39V4uuMQNzGRjl-ei",
     etherscanAPIKey: null,
-    contractAddr: "0x4f7B3562C49C8f0ecdbc5Bea192785114E57b853",
-    nftAddr: "0x944bce254c9ac0c6b17a0206b889e1e4129752d9",
-    keyToken: 158
+    contractAddr: "0xDC876c23Cf2f6AB6000a54e0587Dffa0A2c17151",
+    nftAddr: "0x00149C791aA70e2970eA2d90218fB66B46888a5D",
+    keyToken: 42069
 }
 
 export default config;
