@@ -20,10 +20,10 @@ function FAQ(props) {
                             <Card.Title>What is an NFT and why would I buy one?</Card.Title>
                             <Card.Text>
                                 <p>According to this <a href="https://pitchfork.com/thepitch/why-do-nfts-matter-for-music/?utm_medium=social&utm_social-type=owned&mbid=social_twitter&utm_brand=p4k&utm_source=twitter" target="_blank" rel="noreferrer">fantastic article from Pitchfork</a>, 
-                                NFTs are a way for rich people to buy feelings. At OTC we believe even poor people should be able to buy offbrand feelings.</p>
-                                <p>Well, if buying feelings isn't reason enough, it's also popular to try to flip them for more money.</p> 
-                                <p>Some NFTs offer special priveleges to their owners; such as Crypto Kitties which lets you breed your digital cats, 
-                                or <Link to="/own">Over the Counter's key token</Link> which let's you own and operate this marketplace.</p>
+                                NFTs are a way for rich people to buy feelings. At OTC we believe even poor people should be able to buy feelings (at least offbrand feelings).</p>
+                                <p>If buying feelings isn't reason enough, it's also popular to try to flip them for more money.</p> 
+                                <p>Some NFTs offer special privileges to their owners. For example, owning a Crypto Kitty gives you the power to decide to breed that digital cat. 
+                                Our platform is no different and gives special jurisdiction to exactly one NFT owner. Whoever is in possession of <Link to="/own">Over the Counter's key token</Link> has the power to take ownership of OTC's smart contract, allowing them to own and operate this marketplace (including collect its profits).</p>
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -33,7 +33,8 @@ function FAQ(props) {
                             <Card.Title>Is this a scam?</Card.Title>
                             <Card.Text>
                                 <p>Oh you sweet Summer child, if you think the idea of paying real money to be able to say you own an image file that is hosted somewhere else on the web sounds appealing then this is no more of a scam than 99% of all NFTs that exists right now.</p>
-                                <p>Also, you really can purchase <Link to="/own">the key NFT for OverTheCounter.icu</Link> to become the owner of this marketplace and receive the profits that it generates.</p>
+                                <p>Also, you really can purchase <Link to="/own">the key NFT for OverTheCounter.icu</Link> to become the owner of this marketplace and receive the profits that it generates. If you believe that this platform can be a success in the right hands then go bid for that NFT.</p>
+                                <p style={{opacity:"50%"}}>(Just to be clear, the intention of this platform is not to make it easier to deceive or scam anyone; rather it's to point out some of the glaring flaws that exist in the NFT marketplace today.)</p>
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -68,9 +69,11 @@ function FAQ(props) {
                                             Etc...
                                         </li>
                                     </ul>
-                                    <p>Thank you, let me know if you have any questions!</p>
+                                    <p>Thank you, let me know if you have any questions! I look forward to building upon this relationship and working together for years to come!</p>
                                     <p style={{fontFamily: "'Rock Salt', cursive"}}>0xF8852ec8f7c04DDe72d418b09abf3F2EAF4f8828</p>
                                 </div>
+
+                                <p>Now get out there and buy your friends' LinkedIn profiles so you can force them to post tasteful nudes or whatever.</p>
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -93,8 +96,8 @@ function FAQ(props) {
                             <Card.Text>
                                 <p>NFTs are an interesting idea that probably has a handful of legitimate use-cases.</p>
                                 <p>However, just like the ICO craze of 2017, it seems the crypto world cannot resist the temptation to take an intriguing concept and milk it for all its worth with get-rich-quick schemes.</p>
-                                <p style={{fontSize:"25px"}}>OverTheCounter.icu is an interactive art-piece, ownable as an NFT, that's poking fun at this NFT bubble while itself being a get-rich-quick scheme.</p>
-                                <p>If you're purchasing an NFT to own some art from a marketplace such as OpenSea, then the rational choice would be to create an Over the Counter bootleg of that same NFT here.</p>
+                                <p style={{fontSize:"25px"}}>Over the Counter is an interactive art-piece, ownable as an NFT, that's poking fun at this NFT bubble while itself being a get-rich-quick scheme.</p>
+                                <p>If you're purchasing an NFT to own some art from a marketplace such as OpenSea, then the rational choice would be to create an Over the Counter bootleg of that same NFT here. However, it seems that rationality has little to do with the decision to buy an NFT.</p>
                                 <p>If the NFT your purchasing needs to be a "real" one for you to interact with it on some platform such as Crypto Kitties, well then now we've come to the centralized/decentralized paradox. 
                                     If the <i>true</i> value of owning an NFT comes from a central party (such as Crypto Kitties), then why have we decentralized the ownership when it could have been done in a way that was cheaper, easier, 
                                     and better for the environment by the central party in the first place.</p>

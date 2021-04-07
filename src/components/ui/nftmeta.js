@@ -117,15 +117,15 @@ function NFTMeta(props) {
                             <Form.Label>Image URL*</Form.Label>
                             <Form.Control onChange={handleChange} name="image" disabled={!props.editable} type="text" placeholder="Used to visually represent the thing you own" value={values.image} />
                         </Form.Group>
+   
+                        <Form.Group controlId={"nftmeta-ext-url"+values.NFTID}>
+                            <Form.Label>External URL</Form.Label>
+                            <Form.Control onChange={handleChange} name="external_url"  disabled={!props.editable} type="text" value={values.external_url} placeholder="This is the URL to the thing you want to own (e.g., a comment on Reddit)" />
+                        </Form.Group>
 
                         <Form.Group controlId={"nftmeta-animation-url"+values.NFTID}>
                             <Form.Label>Animation URL</Form.Label>
                             <Form.Control onChange={handleChange} name="animation_url" disabled={!props.editable} type="text" value={values.animation_url} placeholder="It's like an image from Harry Potter" />
-                        </Form.Group>
-
-                        <Form.Group controlId={"nftmeta-ext-url"+values.NFTID}>
-                            <Form.Label>External URL</Form.Label>
-                            <Form.Control onChange={handleChange} name="external_url"  disabled={!props.editable} type="text" value={values.external_url} placeholder="This is the URL to the thing you want to own (e.g., a comment on Reddit)" />
                         </Form.Group>
 
                         <Form.Group controlId={"nftmeta-youtube-url"+values.NFTID}>

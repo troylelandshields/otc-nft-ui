@@ -101,7 +101,7 @@ function Custom(props) {
                         <Card.Body>
                             <Card.Title>Step 1</Card.Title>
                             <Card.Text>
-								<a href="https://bing.com" target="_blank" rel="noreferrer">Find some content</a> you love or want to sell or control.
+								<a href="https://bing.com" target="_blank" rel="noreferrer">Find some content</a> you love or want to sell or control. <span style={{opacity:"50%"}}>Your friend's Twitter account, your favorite CSS library, a subreddit, facebook.com... Anything that has a URL</span>
                             </Card.Text>
                         </Card.Body>
 					</Card>

@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState, useCallback } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Row, Col, Form, Button, Card, Spinner } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Spinner, Modal } from 'react-bootstrap';
 import { useLocation, useHistory } from 'react-router-dom';
 import NFTMeta from '../ui/nftmeta.js';
 import Checkout from '../ui/checkout.js';
@@ -45,6 +45,7 @@ function Counterfeit(props) {
 	let [ rugPullMeta, setRugPullMeta ] = useState(null);
 	let [ quickloadPreview, setQuickloadPreview ] = useState(contractParam && tokenParam);
 	let [ loadingPreview, setLoadingPreview ] = useState(false);
+	let [ modalDetails, setModalDetails ] = useState({});
 
 
 	useEffect(() => {
@@ -75,6 +76,10 @@ function Counterfeit(props) {
 
 	let parseAndSetCounterfeitAddr = (val) => {
 		let parts = val.split("assets");
+		if (!parts || parts.length !== 2) {
+			// try nifty urls
+			parts = val.split("secondary");
+		}
 		if (!parts || parts.length !== 2) {
 			setCounterfeitContractAddr(val);
 			return
@@ -121,7 +126,13 @@ function Counterfeit(props) {
 
 		} catch (e) {
 			console.log("Error occurred when attempting to go to checkout.", e);
-			alert("It looks like that NFT isn't yet supported by OTC; we're working on it, but in the meantime try another one.")
+			setModalDetails({
+				title: "Oops!",
+				message: "It looks like that NFT isn't yet supported by OTC! We're working on supporting as many smart contracts as possible, but in the meantime please try another one.",
+				onClose: () => {
+					handleClear();
+				}
+			});
 		}
 		setLoadingPreview(false);
 	}, [includeRugPull, rugPullDate, rugPullTime, counterfeitContractAddr, counterfeitTokenId]);
@@ -153,6 +164,13 @@ function Counterfeit(props) {
 		e.preventDefault();
 		setOrder(null);
 	};
+
+    let handleClose = () => {
+        if (modalDetails.onClose) {
+            modalDetails.onClose();
+        }
+        setModalDetails({});
+    }
 
 	return (
 		<div>
@@ -281,6 +299,17 @@ function Counterfeit(props) {
 				</> : null
 			}
 
+			<Modal show={!!modalDetails.title} onHide={handleClose}>
+				<Modal.Header closeButton>
+					<Modal.Title>{modalDetails.title}</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>{modalDetails.message}</Modal.Body>
+				<Modal.Footer>
+				<Button variant="secondary" onClick={handleClose}>
+					Close
+				</Button>
+				</Modal.Footer>
+			</Modal>
 		</div>
 	);
 }

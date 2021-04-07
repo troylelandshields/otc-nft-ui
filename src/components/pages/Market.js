@@ -19,11 +19,7 @@ function Market(props) {
                         <Card.Body>
                             <Card.Title>What is an NFT and why would I buy one?</Card.Title>
                             <Card.Text>
-                                <p>According to this <a href="https://pitchfork.com/thepitch/why-do-nfts-matter-for-music/?utm_medium=social&utm_social-type=owned&mbid=social_twitter&utm_brand=p4k&utm_source=twitter" target="_blank" rel="noreferrer">fantastic article from Pitchfork</a>, 
-                                NFTs are a way for rich people to buy feelings. At OTC we believe even poor people should be able to buy offbrand feelings.</p>
-                                <p>Well, if buying feelings isn't reason enough, it's also popular to try to flip them for more money.</p> 
-                                <p>Some NFTs offer special priveleges to their owners; such as Crypto Kitties which lets you breed your digital cats, 
-                                or <Link to="/own">Over the Counter's key token</Link> which let's you own and operate this marketplace.</p>
+                                
                             </Card.Text>
                         </Card.Body>
                     </Card>
