@@ -137,7 +137,7 @@ function TakeOwnership(props) {
                             <Card.Title>Step 1</Card.Title>
                             <Card.Text>
 								{/* TODO: this needs to be more dynamic based on the configs */}
-								<a href={`https://testnets.opensea.io/assets/0x944bce254c9ac0c6b17a0206b889e1e4129752d9/${config.keyToken}`} target="_blank" rel="noreferrer">Buy the Key NFT that indicates who owns overthecounter.icu.</a>
+								<a href={`https://testnets.opensea.io/assets/${config.contractAddr}/${config.keyToken}`} target="_blank" rel="noreferrer">Buy the Key NFT that indicates who owns overthecounter.icu.</a>
                             </Card.Text>
                         </Card.Body>
 					</Card>
